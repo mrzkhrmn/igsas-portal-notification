@@ -1,6 +1,7 @@
 import React from "react";
 import CompanyLogo from "../assets/icons/igsas-logo.png";
 import LoginImage from "../assets/images/login-image.jpg";
+import MsalLoginButton from "../components/MsalLoginButton";
 
 const Login = () => {
   return (
@@ -30,7 +31,7 @@ const Login = () => {
                   type="text"
                   label="john.doe@example.com"
                   placeholder="Kullanıcı Adı"
-                  className="border border-gray-300 rounded-md p-2"
+                  className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
                 />
               </div>
               <div className="flex flex-col w-full">
@@ -43,7 +44,7 @@ const Login = () => {
                 <input
                   type="password"
                   placeholder="Şifrenizi giriniz"
-                  className="border border-gray-300 rounded-md p-2"
+                  className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
                 />
               </div>
               <div className="flex items-center gap-2 w-full">
@@ -52,9 +53,7 @@ const Login = () => {
                   Beni Hatırla
                 </label>{" "}
               </div>
-              <button className="bg-[#0E5239] font-light text-white p-2 rounded-md">
-                Giriş
-              </button>
+              <MsalLoginButton />
             </div>
           </div>
         </div>
