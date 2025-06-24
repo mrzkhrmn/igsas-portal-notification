@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CompanyLogo from "../assets/icons/igsas-logo.png";
+import CompanySingleLogo from "../assets/icons/igsas-logo-single.png";
 import NotificationIcon from "../constants/icons/notificationIcon";
 
 const Sidebar = () => {
@@ -39,12 +40,23 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-full">
-      <div className="p-4">
+    <div className="w-16 md:w-64 bg-white border-r border-gray-200 h-full">
+      <div className="p-4 items-center justify-center">
         <div className="flex items-center justify-center">
-          <img src={CompanyLogo} alt="IGSAŞ Logo" className="h-8" />
+          <img
+            src={CompanySingleLogo}
+            alt="IGSAŞ Logo"
+            className="h-8 block md:hidden"
+          />
+          <img
+            src={CompanyLogo}
+            alt="IGSAŞ Logo"
+            className="h-8 hidden md:block"
+          />
         </div>
-        <h2 className="text-sm text-gray-400 mt-8 mb-4">Uygulamalar</h2>
+        <h2 className="text-sm text-gray-400 mt-8 mb-4">
+          <span className="hidden md:block">Uygulamalar</span>
+        </h2>
         <nav className="space-y-2">
           {menuItems.map((item, index) => {
             // Aktif durumu URL'den belirle
@@ -54,7 +66,7 @@ const Sidebar = () => {
               <button
                 onClick={() => handleClick(item.path)}
                 key={index}
-                className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-colors ${
+                className={`w-full flex items-center justify-center md:justify-start gap-3 px-3 py-2 text-left rounded-lg transition-colors ${
                   isActive
                     ? "bg-green-50 text-green-700 border border-green-200"
                     : "text-gray-700 hover:bg-gray-50"
@@ -63,7 +75,9 @@ const Sidebar = () => {
                 <span className={isActive ? "text-green-600" : "text-gray-500"}>
                   {item.icon}
                 </span>
-                <span className="text-sm font-medium">{item.title}</span>
+                <span className="text-sm font-medium hidden md:block">
+                  {item.title}
+                </span>
               </button>
             );
           })}

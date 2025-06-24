@@ -1,6 +1,6 @@
 import React from "react";
 
-const ManuelNotificationsTable = ({ setShowAddForm }) => {
+const AutoNotificationsTable = ({ setShowAddForm }) => {
   const notifications = [
     {
       id: "#91716",
@@ -190,4 +190,4 @@ const ManuelNotificationsTable = ({ setShowAddForm }) => {
   );
 };
 
-export default ManuelNotificationsTable;
+export default AutoNotificationsTable;
