@@ -11,3 +11,15 @@ export const baseApi = createApi({
   }),
   endpoints: () => ({}),
 });
+
+export const igsasApi = createApi({
+  reducerPath: "igsasApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_IGSAS_API_URL,
+    prepareHeaders: (headers) => {
+      headers.set("Content-Type", "application/json");
+      return headers;
+    },
+  }),
+  endpoints: () => ({}),
+});
