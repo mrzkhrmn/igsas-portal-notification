@@ -15,9 +15,13 @@ export const baseApi = createApi({
 export const igsasApi = createApi({
   reducerPath: "igsasApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_IGSAS_API_URL,
+    baseUrl: "/api/Igmo",
     prepareHeaders: (headers) => {
       headers.set("Content-Type", "application/json");
+      headers.set(
+        "Authorization",
+        `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IklHTU9fMjgwMl9Vc2VyIiwicm9sZSI6IklHTU9fMjgwMl9Vc2VyIiwibmJmIjoxNzUyMDg5NDgyLCJleHAiOjE3NTIwOTMwODIsImlhdCI6MTc1MjA4OTQ4Mn0.KquDfa-MJ6xPT_egAjvZ3dBlWa_hdW-0iUcgtuVHSaw`
+      );
       return headers;
     },
   }),

@@ -1,6 +1,14 @@
 import React from "react";
 import Select from "react-select";
+import { useGetNotificationCustomerGroupQuery } from "../../features/api/notification/notificationApi";
+
 const ManuelTypeForm = ({ setShowAddForm }) => {
+  const {
+    data: custemerGroups,
+    isLoading,
+    error,
+  } = useGetNotificationCustomerGroupQuery();
+
   return (
     <div>
       <div className="flex md:items-center gap-4 flex-col flex-1 md:flex-row">
@@ -8,10 +16,12 @@ const ManuelTypeForm = ({ setShowAddForm }) => {
           <label className="text-gray-600">Müşteri grubu</label>
           <Select
             placeholder="Müşteri grubu seçiniz"
-            options={[
-              { value: "Istanbul", label: "Istanbul" },
-              { value: "Ankara", label: "Ankara" },
-            ]}
+            options={custemerGroups?.data?.CustomerGroupList?.map((group) => ({
+              value: group.Id,
+              label: group.Value,
+            }))}
+            isLoading={isLoading}
+            isDisabled={isLoading || error}
           />
         </div>
         <div className=" flex-col flex-1 hidden md:flex"></div>
