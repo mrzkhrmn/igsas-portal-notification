@@ -76,8 +76,8 @@ const ExcelIcon = () => {
           y2="28.4715"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-opacity="0.1" />
-          <stop offset="1" stop-opacity="0" />
+          <stop stopOpacity="0.1" />
+          <stop offset="1" stopOpacity="0" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_99_2271"
@@ -87,7 +87,7 @@ const ExcelIcon = () => {
           y2="15.9993"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="white" />
+          <stop stopColor="white" />
           <stop offset="1" />
         </linearGradient>
         <linearGradient
@@ -98,8 +98,8 @@ const ExcelIcon = () => {
           y2="24.4926"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="white" stop-opacity="0.2" />
-          <stop offset="1" stop-color="white" stop-opacity="0" />
+          <stop stopColor="white" stopOpacity="0.2" />
+          <stop offset="1" stopColor="white" stopOpacity="0" />
         </linearGradient>
       </defs>
     </svg>

@@ -2,12 +2,17 @@ import { baseApi } from "../baseApi";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation({
-      query: (credentials) => ({
-        url: "/auth/login",
+    loginWithAzure: builder.mutation({
+      query: (token) => ({
+        url: "/AuthLogin",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         method: "POST",
-        body: credentials,
+        body: {},
       }),
     }),
   }),
 });
+
+export const { useLoginWithAzureMutation } = authApi;
