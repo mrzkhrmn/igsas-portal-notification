@@ -8,7 +8,16 @@ export const notificationApi = igsasApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    getNotificationCustomerInfo: build.query({
+      query: (musGrupId) => ({
+        url: `/GetNotificationCustomerInfo?musGrup=${musGrupId}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetNotificationCustomerGroupQuery } = notificationApi;
+export const {
+  useGetNotificationCustomerGroupQuery,
+  useGetNotificationCustomerInfoQuery,
+} = notificationApi;

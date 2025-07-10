@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
-import { useGetNotificationCustomerGroupQuery } from "../../features/api/notification/notificationApi";
+import {
+  useGetNotificationCustomerGroupQuery,
+  useGetNotificationCustomerInfoQuery,
+} from "../../features/api/notification/notificationApi";
 
 const ManuelTypeForm = ({ setShowAddForm }) => {
+  const [selectedMusGrupId, setSelectedMusGrupId] = useState(null);
+  const [selectedMusSinif, setSelectedMusSinif] = useState(null);
   const {
     data: custemerGroups,
     isLoading,
     error,
   } = useGetNotificationCustomerGroupQuery();
+
+  const { data: customerInfo } = useGetNotificationCustomerInfoQuery(
+    selectedMusGrupId,
+    { skip: !selectedMusGrupId }
+  );
 
   return (
     <div>
@@ -20,6 +30,7 @@ const ManuelTypeForm = ({ setShowAddForm }) => {
               value: group.Id,
               label: group.Value,
             }))}
+            onChange={(e) => setSelectedMusGrupId(e.value)}
             isLoading={isLoading}
             isDisabled={isLoading || error}
           />
@@ -42,10 +53,13 @@ const ManuelTypeForm = ({ setShowAddForm }) => {
 
           <Select
             placeholder="Müşteri sınıfı seçiniz"
-            options={[
-              { value: "Istanbul", label: "Istanbul" },
-              { value: "Ankara", label: "Ankara" },
-            ]}
+            options={customerInfo?.data?.MusSinifiList.map((musSinifi) => ({
+              value: musSinifi.KUKLA,
+              label: musSinifi.VTEXT,
+            }))}
+            onChange={(e) => setSelectedMusSinif(e.value)}
+            isLoading={isLoading}
+            isDisabled={isLoading || error}
           />
         </div>
         <div className="flex flex-col flex-1">
