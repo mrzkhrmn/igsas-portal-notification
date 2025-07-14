@@ -24,6 +24,7 @@ const Notifications = () => {
     if (selectedTabId === id) return;
     setSelectedTabId(id);
   };
+
   return (
     <section>
       <div className="flex items-center gap-4">
