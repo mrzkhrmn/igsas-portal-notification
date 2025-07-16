@@ -1,10 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import ManuelNotifIcon from "../constants/icons/ManuelNotifIcon";
 import ManuelNotifications from "../components/Notifications/ManuelNotifications";
 import AutoNotifications from "../components/Notifications/AutoNotifications";
+import { useDispatch } from "react-redux";
+import { setIdToken } from "../features/global/globalSlice";
 
 const Notifications = () => {
   const [selectedTabId, setSelectedTabId] = useState(1);
+  const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (token) {
+      dispatch(setIdToken(token));
+    }
+  }, [dispatch, searchParams]);
+
   const tabButtons = [
     {
       id: 1,

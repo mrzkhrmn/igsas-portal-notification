@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: false,
-  token: null,
+  idToken: null,
 };
 
 const globalSlice = createSlice({
@@ -12,11 +12,11 @@ const globalSlice = createSlice({
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
-    setToken: (state, action) => {
-      state.token = action.payload;
+    setIdToken: (state, action) => {
+      state.idToken = action.payload;
     },
   },
 });
 
-export const { setIsLoading, setToken } = globalSlice.actions;
+export const { setIsLoading, setIdToken } = globalSlice.actions;
 export default globalSlice.reducer;
