@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import {
-  useGetNotificationCustomerGroupQuery,
-  useGetNotificationCustomerInfoQuery,
   useGetCityListMutation,
   useSendManuelNotificationMutation,
 } from "../../features/api/notification/notificationApi";
+import {
+  useGetNotificationCustomerGroupQuery,
+  useGetNotificationCustomerInfoQuery,
+} from "../../features/api/igsasMobilApi";
+import { toast } from "react-toastify";
 
 const ManuelTypeForm = ({ setShowAddForm }) => {
   const [notificationTitle, setNotificationTitle] = useState("");
@@ -48,16 +51,18 @@ const ManuelTypeForm = ({ setShowAddForm }) => {
     return unique;
   }, []);
 
-  const handleSendNotification = async () => {
+  const notify = (message) => toast.success(message);
+
+  const handleSendNotification = () => {
     try {
-      const response = await sendManuelNotification({
+      sendManuelNotification({
         title: notificationTitle,
         message: notificationContent,
         customerClass: selectedMusSinif.toString(),
         customerGroup: selectedMusGrupId.toString(),
         dealer: selectedBayi.toString(),
-      });
-      console.log(response);
+      }).unwrap();
+      notify("Bildirim başarıyla gönderildi");
     } catch (error) {
       console.log(error);
     } finally {
@@ -72,10 +77,6 @@ const ManuelTypeForm = ({ setShowAddForm }) => {
     setSelectedMusSinif(null);
     setSelectedCity(null);
   };
-
-  console.log("selectedMusGrupId", selectedMusGrupId);
-  console.log("selectedMusSinif", selectedMusSinif);
-  console.log("selectedBayi", selectedBayi);
 
   return isSending ? (
     <div>Loading...</div>

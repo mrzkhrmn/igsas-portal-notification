@@ -6,17 +6,23 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      "/api/Igmo": {
-        target: "https://portalapi.yildiz.com",
-        changeOrigin: true,
-        secure: true,
-        rewrite: (path) => path.replace(/^\/api\/Igmo/, "/api/Igmo"),
-      },
       "/api": {
         target: "https://igsas-portal-bildirim.ranna.com.tr",
         changeOrigin: true,
-        secure: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
+        secure: true,
+      },
+      "/igmo-api": {
+        target: "https://portalapi.yildiz.com/api/Igmo",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/igmo-api/, ""),
+        secure: true,
+      },
+      "/auth-api": {
+        target: "https://portalapi.yildiz.com/api",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/auth-api/, ""),
+        secure: true,
       },
     },
   },

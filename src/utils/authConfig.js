@@ -1,16 +1,13 @@
+import { LogLevel } from "@azure/msal-browser";
+
 export const msalConfig = {
   auth: {
     clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
     authority: import.meta.env.VITE_AZURE_AUTHORITY,
-    redirectUri:
-      import.meta.env.VITE_AZURE_REDIRECT_URI || window.location.origin,
-    postLogoutRedirectUri:
-      import.meta.env.VITE_AZURE_POST_LOGOUT_REDIRECT_URI ||
-      window.location.origin,
-    navigateToLoginRequestUrl: false,
+    redirectUri: import.meta.env.VITE_AZURE_REDIRECT_URI,
   },
   cache: {
-    cacheLocation: "localStorage",
+    cacheLocation: "sessionStorage",
     storeAuthStateInCookie: false,
   },
   system: {
@@ -20,16 +17,16 @@ export const msalConfig = {
           return;
         }
         switch (level) {
-          case "Error":
+          case LogLevel.Error:
             console.error(message);
             return;
-          case "Info":
+          case LogLevel.Info:
             console.info(message);
             return;
-          case "Verbose":
+          case LogLevel.Verbose:
             console.debug(message);
             return;
-          case "Warning":
+          case LogLevel.Warning:
             console.warn(message);
             return;
           default:
@@ -40,7 +37,6 @@ export const msalConfig = {
   },
 };
 
-export const loginRequest = {
-  scopes: ["user.read"],
-  prompt: "select_account",
+export const tokenRequest = {
+  scopes: "api.scope",
 };

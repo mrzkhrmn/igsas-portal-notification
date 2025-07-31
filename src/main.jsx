@@ -8,7 +8,9 @@ import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./utils/authConfig";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { Provider } from "react-redux";
-import { store } from "../store.js";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "../store.js";
+import { ToastContainer } from "react-toastify";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
@@ -16,9 +18,12 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <MsalProvider instance={msalInstance}>
       <Provider store={store}>
-        <Router>
-          <App />
-        </Router>
+        <PersistGate loading={null} persistor={persistor}>
+          <Router>
+            <ToastContainer />
+            <App />
+          </Router>
+        </PersistGate>
       </Provider>
     </MsalProvider>
   </StrictMode>

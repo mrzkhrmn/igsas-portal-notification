@@ -12,7 +12,14 @@ export const authApi = baseApi.injectEndpoints({
         body: {},
       }),
     }),
+    login: builder.mutation({
+      query: (data) => ({
+        url: "/Access/Login",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useLoginWithAzureMutation } = authApi;
+export const { useLoginWithAzureMutation, useLoginMutation } = authApi;

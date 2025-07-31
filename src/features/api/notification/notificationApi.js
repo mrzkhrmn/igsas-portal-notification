@@ -1,27 +1,24 @@
-import { baseApi, igsasApi } from "../baseApi";
-
-export const notificationApi = igsasApi.injectEndpoints({
-  endpoints: (build) => ({
-    getNotificationCustomerGroup: build.query({
-      query: () => ({
-        url: "/GetNotificationCustomerGroup",
-        method: "GET",
-      }),
-    }),
-    getNotificationCustomerInfo: build.query({
-      query: (musGrupId) => ({
-        url: `/GetNotificationCustomerInfo?musGrup=${musGrupId}`,
-        method: "GET",
-      }),
-    }),
-  }),
-});
+import { baseApi } from "../baseApi";
 
 export const sendNotificationApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     sendManuelNotification: build.mutation({
       query: (data) => ({
         url: "/Notification/SendSimple",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    sendManuelNotificationWithExcel: build.mutation({
+      query: (data) => ({
+        url: "/Notification/send-by-excel",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getManuelNotifications: build.mutation({
+      query: (data) => ({
+        url: "/Notification/Logs",
         method: "POST",
         body: data,
       }),
@@ -37,9 +34,8 @@ export const sendNotificationApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetNotificationCustomerGroupQuery,
-  useGetNotificationCustomerInfoQuery,
-} = notificationApi;
-
-export const { useSendManuelNotificationMutation, useGetCityListMutation } =
-  sendNotificationApi;
+  useSendManuelNotificationMutation,
+  useGetCityListMutation,
+  useGetManuelNotificationsMutation,
+  useSendManuelNotificationWithExcelMutation,
+} = sendNotificationApi;
