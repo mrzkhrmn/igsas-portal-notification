@@ -1,34 +1,30 @@
 import React, { useEffect } from "react";
 import {
   useAssignRoleMutation,
-  useGetUsersMutation,
+  useGetUsersQuery,
 } from "../features/api/user/userApi";
 import CustomSwitchComponent from "../components/CustomSwitchComponent";
 import { useDispatch } from "react-redux";
 import { setIsLoading } from "../features/global/globalSlice";
 
 const Users = () => {
-  const [getUsers, { data: userData, isLoading }] = useGetUsersMutation();
+  const { data: userData, isLoading } = useGetUsersQuery({
+    name: "",
+    surname: "",
+    email: "",
+    page: 0,
+    pageSize: 10,
+  });
   const [assignRole] = useAssignRoleMutation();
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    getUsers({
-      name: "",
-      surname: "",
-      email: "",
-      page: 0,
-      pageSize: 10,
-    }).unwrap();
-  }, [getUsers]);
 
   const handleUserAccessChange = (userId, roleStatus) => {
     dispatch(setIsLoading(true));
     try {
       assignRole({
         userId: userId,
-        roleStatus: !roleStatus,
+        hasAccess: !roleStatus,
       }).unwrap();
     } catch (error) {
       console.log(error);
@@ -36,6 +32,8 @@ const Users = () => {
       dispatch(setIsLoading(false));
     }
   };
+
+  console.log(userData?.data.items);
 
   return (
     <div className="bg-white rounded-lg shadow-sm mt-4">
@@ -121,13 +119,38 @@ const Users = () => {
                     {user.email}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button
-                      onClick={() =>
-                        handleUserAccessChange(user.id, user.hasAccess)
-                      }
-                    >
-                      <CustomSwitchComponent checked={user.hasAccess} />
-                    </button>
+                    <div className="flex items-center space-x-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUserAccessChange(user.id, user.hasAccess)
+                        }
+                        disabled={isLoading}
+                        className={`
+          relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out
+          ${
+            user.hasAccess
+              ? "bg-[#0E5239] hover:bg-[#0E5239]/80"
+              : "bg-gray-200 hover:bg-gray-300"
+          }
+          ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+        `}
+                      >
+                        <span
+                          className={`
+            inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out
+            ${user.hasAccess ? "translate-x-6" : "translate-x-1"}
+          `}
+                        />
+                      </button>
+                      <span
+                        className={`text-base  ${
+                          isLoading ? "text-gray-400" : "text-gray-700"
+                        }`}
+                      >
+                        {user.hasAccess ? "Aktif" : "Pasif"}
+                      </span>
+                    </div>
                   </td>
                 </tr>
               ))}

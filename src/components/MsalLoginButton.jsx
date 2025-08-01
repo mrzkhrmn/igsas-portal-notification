@@ -42,10 +42,10 @@ const MsalLoginButton = () => {
       }).unwrap();
 
       console.log("loginresponse", loginResponse);
-      // if (!loginResponse.data.data.hasAccess) {
-      //   notify("Giriş yapmak için yetkiniz bulunmamaktadır.");
-      //   return;
-      // }
+      if (!loginResponse.isSuccess) {
+        notify("Giriş yapmak için yetkiniz bulunmamaktadır.");
+        return;
+      }
 
       dispatch(setLoginToken(loginResponse.data.accessToken));
 

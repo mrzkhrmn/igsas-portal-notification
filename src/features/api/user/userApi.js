@@ -2,12 +2,13 @@ import { baseApi } from "../baseApi";
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getUsers: builder.mutation({
-      query: (data) => ({
-        url: "/User/List",
-        method: "POST",
-        body: data,
+    getUsers: builder.query({
+      query: ({ name, surname, email, page, pageSize }) => ({
+        url: "/User/UserList",
+        method: "GET",
+        params: { name, surname, email, page, pageSize },
       }),
+      providesTags: ["Users"],
     }),
     assignRole: builder.mutation({
       query: (data) => ({
@@ -15,8 +16,9 @@ export const userApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Users"],
     }),
   }),
 });
 
-export const { useGetUsersMutation, useAssignRoleMutation } = userApi;
+export const { useGetUsersQuery, useAssignRoleMutation } = userApi;

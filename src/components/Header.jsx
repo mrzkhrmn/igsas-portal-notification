@@ -1,8 +1,17 @@
 import React from "react";
 import CompanyLogo from "../assets/icons/igsas-logo.png";
 import NotificationIcon from "../constants/icons/notificationIcon";
+import { logout } from "../features/global/globalSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
   return (
     <header className="shadow-lg rounded-lg bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between w-full">
       {/* Sağ taraf - Dil seçimi ve kullanıcı bilgileri */}
@@ -36,6 +45,12 @@ const Header = () => {
             className="w-5 h-4"
           />
           <span className="text-sm text-gray-600">Türkçe</span>
+          <button
+            onClick={handleLogout}
+            className="text-sm text-gray-600 cursor-pointer"
+          >
+            Çıkış Yap
+          </button>
         </div>
       </div>
     </header>
