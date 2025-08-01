@@ -15,7 +15,7 @@ const ExcelTypeForm = ({ setShowAddForm }) => {
   const notify = (message) => toast.success(message);
   const dispatch = useDispatch();
 
-  const [sendManuelNotificationWithExcel] =
+  const [sendManuelNotificationWithExcel, { isLoading }] =
     useSendManuelNotificationWithExcelMutation();
 
   const handleSubmit = async (e) => {
@@ -42,6 +42,9 @@ const ExcelTypeForm = ({ setShowAddForm }) => {
     setDescription("");
     setColumnIndex(0);
     setFile(null);
+    if (fileRef.current) {
+      fileRef.current.value = "";
+    }
   };
 
   return (
@@ -53,7 +56,6 @@ const ExcelTypeForm = ({ setShowAddForm }) => {
             type="file"
             accept=".xlsx,.xls"
             ref={fileRef}
-            value={file}
             required
             className="py-2 px-4 border border-gray-300 rounded-l-md text-gray-500"
           />
@@ -102,15 +104,18 @@ const ExcelTypeForm = ({ setShowAddForm }) => {
         <textarea
           placeholder="Bildirim mesajınızı giriniz"
           id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           className="border w-full py-1.5 px-2 border-gray-300 rounded-md  bg-white resize-none h-32"
         ></textarea>
       </div>
       <div className="mt-8 flex items-center  justify-center gap-10">
         <button
+          disabled={isLoading}
           type="submit"
           className="bg-[#0E5239] border border-[#0E5239] text-white px-4 py-2 rounded-md w-32  hover:bg-[#0E5239]/80 cursor-pointer"
         >
-          Kaydet
+          {isLoading ? "Gönderiliyor..." : "Kaydet"}
         </button>
         <button
           onClick={() => setShowAddForm(false)}

@@ -4,6 +4,7 @@ const initialState = {
   isLoading: false,
   appLoginToken: null,
   loginToken: null,
+  refreshToken: null,
   igsasToken: null,
 };
 
@@ -20,12 +21,17 @@ const globalSlice = createSlice({
     setLoginToken: (state, action) => {
       state.loginToken = action.payload;
     },
+    setRefreshToken: (state, action) => {
+      state.refreshToken = action.payload;
+    },
     setIgsasToken: (state, action) => {
       state.igsasToken = action.payload;
     },
     logout: (state) => {
       state.igsasToken = null;
       state.appLoginToken = null;
+      state.loginToken = null;
+      state.refreshToken = null;
     },
   },
 });
@@ -34,6 +40,7 @@ export const {
   setIsLoading,
   setAppLoginToken,
   setLoginToken,
+  setRefreshToken,
   setIgsasToken,
   logout,
 } = globalSlice.actions;

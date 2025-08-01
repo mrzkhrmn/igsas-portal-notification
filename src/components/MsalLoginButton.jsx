@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import {
   setAppLoginToken,
   setLoginToken,
+  setRefreshToken,
 } from "../features/global/globalSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +48,12 @@ const MsalLoginButton = () => {
       // }
 
       dispatch(setLoginToken(loginResponse.data.accessToken));
+
+      // Refresh token'ı da kaydet (eğer response'ta varsa)
+      if (loginResponse.data.refreshToken) {
+        dispatch(setRefreshToken(loginResponse.data.refreshToken));
+      }
+
       navigate("/");
     } catch (error) {
       console.error(error);
