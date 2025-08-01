@@ -1,20 +1,10 @@
-import { baseApi } from "../baseApi";
+import { baseApi, loginApi } from "../baseApi";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    loginWithAzure: builder.mutation({
-      query: (token) => ({
-        url: "/AuthLogin",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        method: "POST",
-        body: {},
-      }),
-    }),
-    login: builder.mutation({
+    appLogin: builder.mutation({
       query: (data) => ({
-        url: "/Access/Login",
+        url: "/Auth/AppLogin",
         method: "POST",
         body: data,
       }),
@@ -22,4 +12,17 @@ export const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useLoginWithAzureMutation, useLoginMutation } = authApi;
+export const authLogin = loginApi.injectEndpoints({
+  endpoints: (builder) => ({
+    login: builder.mutation({
+      query: (data) => ({
+        url: "/Auth/Login",
+        method: "POST",
+        body: data,
+      }),
+    }),
+  }),
+});
+
+export const { useLoginMutation } = loginApi;
+export const { useAppLoginMutation } = authApi;

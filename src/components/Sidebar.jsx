@@ -14,6 +14,7 @@ const Sidebar = () => {
       icon: <NotificationIcon />,
       path: "/notifications",
     },
+    { title: "Kullanıcılar", icon: <NotificationIcon />, path: "/users" },
   ];
 
   const handleClick = (path) => {

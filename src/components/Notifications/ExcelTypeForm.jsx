@@ -100,10 +100,8 @@ const ExcelTypeForm = ({ setShowAddForm }) => {
           Mesaj
         </label>
         <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
           placeholder="Bildirim mesajınızı giriniz"
-          id="content"
+          id="description"
           className="border w-full py-1.5 px-2 border-gray-300 rounded-md  bg-white resize-none h-32"
         ></textarea>
       </div>

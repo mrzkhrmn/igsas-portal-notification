@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import globalReducer from "./src/features/global/globalSlice";
-import { baseApi } from "./src/features/api/baseApi";
+import { baseApi, loginApi } from "./src/features/api/baseApi";
 import authReducer from "./src/features/auth/authSlice";
 import { igsasMobilApi } from "./src/features/api/igsasMobilApi";
 import { injectStore } from "./src/services/apiService";
@@ -34,6 +34,7 @@ export const store = configureStore({
     global: persistedGlobalReducer,
     auth: persistedAuthReducer,
     [baseApi.reducerPath]: baseApi.reducer,
+    [loginApi.reducerPath]: loginApi.reducer,
     [igsasMobilApi.reducerPath]: igsasMobilApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -43,6 +44,7 @@ export const store = configureStore({
       },
     })
       .concat(baseApi.middleware)
+      .concat(loginApi.middleware)
       .concat(igsasMobilApi.middleware),
 });
 

@@ -5,8 +5,23 @@ export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "/api",
     prepareHeaders: (headers, { getState }) => {
-      const panelOidToken = getState().global.panelOidToken;
-      headers.set("Authorization", `Bearer ${panelOidToken}`);
+      const loginToken = getState().global.loginToken;
+      console.log("loginToken", loginToken);
+      headers.set("Authorization", `Bearer ${loginToken}`);
+      return headers;
+    },
+  }),
+  endpoints: () => ({}),
+});
+
+export const loginApi = createApi({
+  reducerPath: "loginApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "/api",
+    prepareHeaders: (headers, { getState }) => {
+      const appLoginToken = getState().global.appLoginToken;
+      console.log("appLoginToken", appLoginToken);
+      headers.set("Authorization", `Bearer ${appLoginToken}`);
       return headers;
     },
   }),
