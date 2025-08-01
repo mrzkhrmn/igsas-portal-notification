@@ -8,21 +8,18 @@ import authReducer from "./src/features/auth/authSlice";
 import { igsasMobilApi } from "./src/features/api/igsasMobilApi";
 import { injectStore } from "./src/services/apiService";
 
-// Global state için persist yapılandırması
 const globalPersistConfig = {
   key: "global",
   storage,
-  whitelist: ["panelOidToken", "igsasToken"], // Sadece token'ları persist et
+  whitelist: ["igsasToken", "loginToken", "refreshToken", "appLoginToken"], // Tüm token'ları persist et
 };
 
-// Auth state için persist yapılandırması
 const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["token", "user"], // Token ve user bilgilerini persist et
+  whitelist: ["token", "user"],
 };
 
-// Persist edilmiş reducer'lar
 const persistedGlobalReducer = persistReducer(
   globalPersistConfig,
   globalReducer
@@ -48,7 +45,6 @@ export const store = configureStore({
       .concat(igsasMobilApi.middleware),
 });
 
-// Store'u apiService'e enjekte et
 injectStore(store);
 
 export const persistor = persistStore(store);

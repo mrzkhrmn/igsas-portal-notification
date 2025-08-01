@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { logout, setLoginToken } from "../global/globalSlice";
+import { logout, setLoginToken, setRefreshToken } from "../global/globalSlice";
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   const baseQuery = fetchBaseQuery({
@@ -22,7 +22,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     const refreshToken = api.getState().global.refreshToken;
 
     if (refreshToken) {
-      // Refresh token ile yeni token almaya çalış
       const refreshResult = await baseQuery(
         {
           url: "/Auth/RefreshToken",
@@ -34,19 +33,19 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       );
 
       if (refreshResult?.data?.isSuccess) {
-        // Yeni token'ı store'a kaydet
         api.dispatch(setLoginToken(refreshResult.data.data.accessToken));
 
-        // Orijinal isteği yeni token ile tekrar yap
+        if (refreshResult.data.data.refreshToken) {
+          api.dispatch(setRefreshToken(refreshResult.data.data.refreshToken));
+        }
+
         result = await baseQuery(args, api, extraOptions);
       } else {
-        // Refresh token geçersiz, kullanıcıyı login sayfasına yönlendir
         console.log("Refresh token geçersiz, çıkış yapılıyor...");
         api.dispatch(logout());
         window.location.href = "/login";
       }
     } else {
-      // Refresh token yok, kullanıcıyı login sayfasına yönlendir
       console.log("Refresh token bulunamadı, çıkış yapılıyor...");
       api.dispatch(logout());
       window.location.href = "/login";
