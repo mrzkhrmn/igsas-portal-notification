@@ -22,10 +22,11 @@ export const authApi = baseApi.injectEndpoints({
 export const authLogin = loginApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
-      query: (data) => ({
+      query: ({ email, token }) => ({
         url: "/Auth/Login",
         method: "POST",
-        body: data,
+        body: { email },
+        headers: { Authorization: `Bearer ${token}` },
       }),
     }),
   }),

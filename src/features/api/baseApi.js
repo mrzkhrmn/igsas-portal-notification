@@ -6,7 +6,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     baseUrl: "/api",
     prepareHeaders: (headers, { getState }) => {
       const loginToken = getState().global.loginToken;
-      console.log("loginToken", loginToken);
       if (loginToken) {
         headers.set("Authorization", `Bearer ${loginToken}`);
       }

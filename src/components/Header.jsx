@@ -4,19 +4,29 @@ import NotificationIcon from "../constants/icons/notificationIcon";
 import { logout } from "../features/global/globalSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useMsal } from "@azure/msal-react";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
+  const { instance } = useMsal();
+
+  const handleLogout = async () => {
+    try {
+      dispatch(logout());
+
+      await instance.logoutPopup({
+        postLogoutRedirectUri: "/login",
+        mainWindowRedirectUri: "/login",
+      });
+    } catch (error) {
+      console.error("Logout hatası:", error);
+      navigate("/login");
+    }
   };
   return (
     <header className="shadow-lg rounded-lg bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between w-full">
-      {/* Sağ taraf - Dil seçimi ve kullanıcı bilgileri */}
       <div className="flex items-center gap-4">
-        {/* Kullanıcı bilgileri */}
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
             <span className="text-sm font-medium text-gray-600">JD</span>

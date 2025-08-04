@@ -1,5 +1,5 @@
 import { useMsal } from "@azure/msal-react";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   useAppLoginMutation,
   useLoginMutation,
@@ -27,21 +27,21 @@ const MsalLoginButton = () => {
         username: "username",
         password: "123456789",
       }).unwrap();
-
+      console.log("handle login tokenResponse", tokenResponse);
       if (!tokenResponse.isSuccess) {
         notify("Giriş yapmak için yetkiniz bulunmamaktadır.");
         return;
       }
-
-      console.log(accounts[0]?.username);
-
       dispatch(setAppLoginToken(tokenResponse.data.accessToken));
-      await instance.loginPopup();
+
+      const popupResult = await instance.loginPopup();
+
       const loginResponse = await login({
-        email: accounts[0]?.username,
+        email: accounts[0]?.username || popupResult.account?.username,
+        token: tokenResponse.data.accessToken,
       }).unwrap();
 
-      console.log("loginresponse", loginResponse);
+      console.log("handle login loginresponse", loginResponse);
       if (!loginResponse.isSuccess) {
         notify("Giriş yapmak için yetkiniz bulunmamaktadır.");
         return;
@@ -49,7 +49,6 @@ const MsalLoginButton = () => {
 
       dispatch(setLoginToken(loginResponse.data.accessToken));
 
-      // Refresh token'ı da kaydet (eğer response'ta varsa)
       if (loginResponse.data.refreshToken) {
         dispatch(setRefreshToken(loginResponse.data.refreshToken));
       }
@@ -60,6 +59,21 @@ const MsalLoginButton = () => {
     }
   };
 
+  useEffect(() => {
+    async function getToken() {
+      const tokenResponse = await appLogin({
+        username: "username",
+        password: "123456789",
+      }).unwrap();
+      console.log("handle login tokenResponse", tokenResponse);
+      if (!tokenResponse.isSuccess) {
+        notify("Giriş yapmak için yetkiniz bulunmamaktadır.");
+        return;
+      }
+      dispatch(setAppLoginToken(tokenResponse.data.accessToken));
+    }
+    getToken();
+  }, [appLogin, dispatch]);
   return (
     <button
       disabled={isLoading}

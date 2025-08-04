@@ -1,21 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import {
   useAssignRoleMutation,
   useGetUsersQuery,
 } from "../features/api/user/userApi";
-import CustomSwitchComponent from "../components/CustomSwitchComponent";
 import { useDispatch } from "react-redux";
 import { setIsLoading } from "../features/global/globalSlice";
 
 const Users = () => {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState("10");
+
   const { data: userData, isLoading } = useGetUsersQuery({
     name: "",
     surname: "",
     email: "",
-    page: 0,
-    pageSize: 10,
+    page: currentPage,
+    pageSize: parseInt(pageSize),
   });
-  const [assignRole] = useAssignRoleMutation();
+
+  const [assignRole, { isLoading: isAssignRoleLoading }] =
+    useAssignRoleMutation();
 
   const dispatch = useDispatch();
 
@@ -33,34 +37,72 @@ const Users = () => {
     }
   };
 
-  console.log(userData?.data.items);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePrevious = () => {
+    if (userData?.data?.hasPrevious) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (userData?.data?.hasNext) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const getPageButtons = () => {
+    const buttons = [];
+    const totalPages = userData?.data?.pages || 0;
+    const current = userData?.data?.index || 0;
+
+    for (let i = 0; i < totalPages; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 text-sm cursor-pointer ${
+            i === current
+              ? "bg-[#0E5239] text-white rounded"
+              : "text-gray-700 hover:text-[#0E5239]"
+          }`}
+        >
+          {i + 1}
+        </button>
+      );
+    }
+    return buttons;
+  };
+
+  const getShowingText = () => {
+    const data = userData?.data;
+    if (!data) return "Veri yükleniyor...";
+
+    const startItem = data.index * data.size + 1;
+    const endItem = Math.min((data.index + 1) * data.size, data.count);
+
+    return `${startItem} - ${endItem} arası gösteriliyor, toplam ${data.count} kayıt`;
+  };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm mt-4">
+    <div className="bg-white rounded-lg shadow-sm my-4">
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
-              <option>Göster 10</option>
-              <option>Göster 25</option>
-              <option>Göster 50</option>
+            <select
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(e.target.value);
+                setCurrentPage(0);
+              }}
+            >
+              <option value={"10"}>Göster 10</option>
+              <option value={"25"}>Göster 25</option>
+              <option value={"50"}>Göster 50</option>
             </select>
-            <button className="bg-[#0E5239] text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 cursor-pointer">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-              Bildirim Ekle
-            </button>
           </div>
           <div className="flex items-center gap-4">
             <input
@@ -104,8 +146,8 @@ const Users = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {userData?.data.items.map((user, index) => (
-                <tr key={index} className="hover:bg-gray-50">
+              {userData?.data?.items?.map((user, index) => (
+                <tr key={user.id || index} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {user.id}
                   </td>
@@ -125,7 +167,7 @@ const Users = () => {
                         onClick={() =>
                           handleUserAccessChange(user.id, user.hasAccess)
                         }
-                        disabled={isLoading}
+                        disabled={isAssignRoleLoading}
                         className={`
           relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-in-out
           ${
@@ -133,7 +175,11 @@ const Users = () => {
               ? "bg-[#0E5239] hover:bg-[#0E5239]/80"
               : "bg-gray-200 hover:bg-gray-300"
           }
-          ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+          ${
+            isAssignRoleLoading
+              ? "opacity-50 cursor-not-allowed"
+              : "cursor-pointer"
+          }
         `}
                       >
                         <span
@@ -145,7 +191,9 @@ const Users = () => {
                       </button>
                       <span
                         className={`text-base  ${
-                          isLoading ? "text-gray-400" : "text-gray-700"
+                          isAssignRoleLoading
+                            ? "text-gray-400"
+                            : "text-gray-700"
                         }`}
                       >
                         {user.hasAccess ? "Aktif" : "Pasif"}
@@ -162,23 +210,29 @@ const Users = () => {
       {/* Sayfalama */}
       <div className="px-6 py-4 border-t border-gray-200">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-500">
-            Showing 1 to 7 of 100 entries
-          </div>
+          <div className="text-sm text-gray-500">{getShowingText()}</div>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1 border border-gray-300 rounded text-sm">
+            <button
+              onClick={handlePrevious}
+              disabled={!userData?.data?.hasPrevious}
+              className={`px-3 py-1 border border-gray-300 rounded text-sm ${
+                !userData?.data?.hasPrevious
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
               ‹
             </button>
-            <button className="px-3 py-1 text-sm">1</button>
-            <button className="px-3 py-1 text-sm">2</button>
-            <button className="px-3 py-1 text-sm">3</button>
-            <button className="px-3 py-1 bg-green-600 text-white rounded text-sm">
-              4
-            </button>
-            <button className="px-3 py-1 text-sm">5</button>
-            <button className="px-3 py-1 text-sm">6</button>
-            <button className="px-3 py-1 text-sm">7</button>
-            <button className="px-3 py-1 border border-gray-300 rounded text-sm">
+            {getPageButtons()}
+            <button
+              onClick={handleNext}
+              disabled={!userData?.data?.hasNext}
+              className={`px-3 py-1 border border-gray-300 rounded text-sm ${
+                !userData?.data?.hasNext
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
               ›
             </button>
           </div>

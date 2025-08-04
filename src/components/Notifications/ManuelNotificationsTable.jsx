@@ -4,6 +4,7 @@ import { formatToDayMonthYear } from "../../utils/formatDate";
 
 const ManuelNotificationsTable = ({ setShowAddForm }) => {
   const [pageSize, setPageSize] = useState("10");
+  const [currentPage, setCurrentPage] = useState(0);
   const [getManuelNotifications, { data: manuelNotificationsData, isLoading }] =
     useGetManuelNotificationsMutation({
       refetchOnMountOrArgChange: true,
@@ -11,25 +12,78 @@ const ManuelNotificationsTable = ({ setShowAddForm }) => {
 
   useEffect(() => {
     getManuelNotifications({
-      page: "0",
+      page: currentPage.toString(),
       pageSize: pageSize,
       content: "",
       title: "",
     });
-  }, [getManuelNotifications, pageSize]);
+  }, [getManuelNotifications, pageSize, currentPage]);
 
   const handleAddNotification = () => {
     setShowAddForm(true);
   };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePrevious = () => {
+    if (manuelNotificationsData?.data?.hasPrevious) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (manuelNotificationsData?.data?.hasNext) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const getPageButtons = () => {
+    const buttons = [];
+    const totalPages = manuelNotificationsData?.data?.pages || 0;
+    const current = manuelNotificationsData?.data?.index || 0;
+
+    for (let i = 0; i < totalPages; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 text-sm cursor-pointer ${
+            i === current
+              ? "bg-[#0E5239] text-white rounded"
+              : "text-gray-700 hover:text-[#0E5239] "
+          }`}
+        >
+          {i + 1}
+        </button>
+      );
+    }
+    return buttons;
+  };
+
+  const getShowingText = () => {
+    const data = manuelNotificationsData?.data;
+    if (!data) return "Veri yükleniyor...";
+
+    const startItem = data.index * data.size + 1;
+    const endItem = Math.min((data.index + 1) * data.size, data.count);
+
+    return `${startItem} - ${endItem} arası gösteriliyor, toplam ${data.count} kayıt`;
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-sm mt-4">
+    <div className="bg-white rounded-lg shadow-sm my-4">
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <select
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
               value={pageSize}
-              onChange={(e) => setPageSize(e.target.value)}
+              onChange={(e) => {
+                setPageSize(e.target.value);
+                setCurrentPage(0);
+              }}
             >
               <option value={"10"}>Göster 10</option>
               <option value={"25"}>Göster 25</option>
@@ -80,7 +134,7 @@ const ManuelNotificationsTable = ({ setShowAddForm }) => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  #
+                  ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   BAŞLIK
@@ -155,23 +209,29 @@ const ManuelNotificationsTable = ({ setShowAddForm }) => {
       {/* Sayfalama */}
       <div className="px-6 py-4 border-t border-gray-200">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-500">
-            Showing 1 to 7 of 100 entries
-          </div>
+          <div className="text-sm text-gray-500">{getShowingText()}</div>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-1 border border-gray-300 rounded text-sm">
+            <button
+              onClick={handlePrevious}
+              disabled={!manuelNotificationsData?.data?.hasPrevious}
+              className={`px-3 py-1 border border-gray-300 rounded text-sm ${
+                !manuelNotificationsData?.data?.hasPrevious
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
               ‹
             </button>
-            <button className="px-3 py-1 text-sm">1</button>
-            <button className="px-3 py-1 text-sm">2</button>
-            <button className="px-3 py-1 text-sm">3</button>
-            <button className="px-3 py-1 bg-green-600 text-white rounded text-sm">
-              4
-            </button>
-            <button className="px-3 py-1 text-sm">5</button>
-            <button className="px-3 py-1 text-sm">6</button>
-            <button className="px-3 py-1 text-sm">7</button>
-            <button className="px-3 py-1 border border-gray-300 rounded text-sm">
+            {getPageButtons()}
+            <button
+              onClick={handleNext}
+              disabled={!manuelNotificationsData?.data?.hasNext}
+              className={`px-3 py-1 border border-gray-300 rounded text-sm ${
+                !manuelNotificationsData?.data?.hasNext
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
               ›
             </button>
           </div>
